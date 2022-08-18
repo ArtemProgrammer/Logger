@@ -10,6 +10,7 @@ public class Game {
     private static int playerScore = 0;
     private static int computerScore = 0;
     private static String name;
+    private static String[] args;
     private static final Logger loggerInfo = LoggerFactory.getLogger("logger.info");
 
     public enum Elements {
@@ -51,10 +52,10 @@ public class Game {
 
     public static void start() throws IOException {
         loggerInfo.info("User logged into the game");
-        System.out.println("Enter your name:");
+        System.out.println(Localization.getResourceBundle(args).getString("enter"));
         name = SCANNER.next();
-        System.out.println("Hi, " + name + ".");
-        System.out.println("Enter number of games:");
+        System.out.println(Localization.getResourceBundle(args).getString("hi") + ", " + name + ".");
+        System.out.println(Localization.getResourceBundle(args).getString("quantityGames"));
         int q = SCANNER.nextInt();
         int temp = q;
         loggerInfo.info("User has selected " + q + " games.");
@@ -62,12 +63,12 @@ public class Game {
             if (q == temp) {
                 playService();
             } else {
-                System.out.println("Do you want play again? Enter 'Y' ar 'N'.");
+                System.out.println(Localization.getResourceBundle(args).getString("playAgain"));
                 if (playAgain()) {
                     playService();
                 } else {
                     printResult(name);
-                    System.out.println("The game is over. Have a good day :)");
+                    System.out.println(Localization.getResourceBundle(args).getString("gameOver"));
                     break;
                 }
             }
@@ -82,13 +83,17 @@ public class Game {
         loggerInfo.info("User logged out");
     }
 
+    public static void setArgs(String[] arg) {
+        args = arg;
+    }
+
     private static void playService() {
         Player player = new Player();
         Computer computer = new Computer();
         Elements playerMove = player.makeMove();
         Elements computerMove = computer.makeMove();
-        System.out.println("Your move " + playerMove + ".");
-        System.out.println("Computer move " + computerMove + ".");
+        System.out.println(Localization.getResourceBundle(args).getString("yourMove") + " " + playerMove + ".");
+        System.out.println(Localization.getResourceBundle(args).getString("computerMove") + " " + computerMove + ".");
         loggerInfo.info("User move " + playerMove);
         loggerInfo.info("Computer move " + computerMove);
         String compareMoves = elementsService(playerMove, computerMove);
@@ -104,20 +109,23 @@ public class Game {
 
     private static boolean playAgain() {
         String more = SCANNER.next();
-        if (more.equals("Y") || more.equals("y")) {
+        if (more.equals("Y") || more.equals("y") || more.equals("д") || more.equals("Д") || more.equals("j") || more.equals("J")) {
             return true;
-        } else if (more.equals("N") || more.equals("n")) {
+        } else if (more.equals("N") || more.equals("n")|| more.equals("н") || more.equals("Н")) {
             return false;
         }
         else {
             loggerInfo.info("User entered incorrect value");
-            System.out.println("Enter 'Y' or 'N'");
+            System.out.println(Localization.getResourceBundle(args).getString("repitQuare"));
             playAgain();
         }
         return false;
     }
 
     private static void printResult(String name) {
-        System.out.println(name + " played " + countGames + " games. Win: " + playerScore + ". Lose: " + computerScore);
+        System.out.println(name + " " + Localization.getResourceBundle(args).getString("played") +
+                " " + countGames + " " + Localization.getResourceBundle(args).getString("games") +
+                ". "+ Localization.getResourceBundle(args).getString("win") + ": " + playerScore +
+                ". " + Localization.getResourceBundle(args).getString("lose") + ": " + computerScore);
     }
 }
